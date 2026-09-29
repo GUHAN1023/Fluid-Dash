@@ -196,7 +196,8 @@ def load_fixture(explicit, config_path):
 
 def main():
     ap = argparse.ArgumentParser(description="DOGFOOD 2026 acceptance checker")
-    ap.add_argument("config", help="path to .dogfood.toml")
+    ap.add_argument("config", nargs="?", default=".dogfood.toml",
+                    help="path to .dogfood.toml (defaults to .dogfood.toml)")
     ap.add_argument("--fixtures", default=None,
                     help="path to fixtures.json (searched for if omitted)")
     args = ap.parse_args()

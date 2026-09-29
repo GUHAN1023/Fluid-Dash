@@ -3,6 +3,7 @@ base_url = "http://127.0.0.1:5000"
 
 [tiers]
 claimed = ["T1", "T2"]
+pitch = "Self-hostable hackathon submission and judging platform with backend-enforced role isolation and rubric scoring."
 
 [routes]
 gallery = "/hackathon/gallery.html"
