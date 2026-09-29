@@ -1,0 +1,43 @@
+<header class="unified-nav-wrapper">
+  <div class="container">
+    <div class="unified-nav-top">
+      <a href="/" class="unified-brand">
+        <span class="unified-brand-icon">🐕</span>
+        <span class="unified-brand-title">DOGFOOD 2026</span>
+        <span class="unified-brand-badge">Hackathon Platform</span>
+      </a>
+
+      <div class="unified-role-bar">
+        <span class="unified-role-label">Active Role:</span>
+        {% if user and user.role == 'organizer' %}
+          <span class="unified-active-role-tag organizer">👑 Organizer ({{ user.username }})</span>
+        {% elif user and user.role == 'judge' %}
+          <span class="unified-active-role-tag judge">⚖️ Judge ({{ user.username }})</span>
+        {% elif user and user.role == 'participant' %}
+          <span class="unified-active-role-tag participant">💻 Participant ({{ user.username }})</span>
+        {% else %}
+          <span class="unified-active-role-tag visitor">👁️ Public Visitor</span>
+        {% endif %}
+
+        <span class="unified-role-label" style="margin-left: 6px;">Switch:</span>
+        <a href="/set-role/organizer" class="unified-role-btn org {% if user and user.role == 'organizer' %}active{% endif %}" title="Switch to Organizer">👑 Organizer</a>
+        <a href="/set-role/judge_a" class="unified-role-btn judge {% if user and user.username == 'judge_a' %}active{% endif %}" title="Switch to Judge A">⚖️ Judge A</a>
+        <a href="/set-role/judge_b" class="unified-role-btn judge {% if user and user.username == 'judge_b' %}active{% endif %}" title="Switch to Judge B">⚖️ Judge B</a>
+        <a href="/set-role/participant" class="unified-role-btn prt {% if user and user.role == 'participant' %}active{% endif %}" title="Switch to Participant">💻 Participant</a>
+        <a href="/set-role/visitor" class="unified-role-btn vis {% if not user %}active{% endif %}" title="Switch to Public Visitor">👁️ Visitor</a>
+      </div>
+    </div>
+
+    <div class="unified-nav-links">
+      <a href="/" class="unified-nav-item {% if active_page == 'home' %}active{% endif %}">🏠 Event Overview</a>
+      <a href="/hackathon/gallery.html" class="unified-nav-item {% if active_page == 'gallery' %}active{% endif %}">🖼️ Gallery (41) <span class="unified-nav-badge">T1</span></a>
+      <a href="/hackathon/score.html" class="unified-nav-item {% if active_page == 'score' %}active{% endif %}">⚖️ Scoring & Rubrics <span class="unified-nav-badge">T2</span></a>
+      <a href="/hackathon/vote.html" class="unified-nav-item {% if active_page == 'vote' %}active{% endif %}">🗳️ Community Vote <span class="unified-nav-badge">T3</span></a>
+      <a href="/dashboard" class="unified-nav-item {% if active_page == 'dashboard' %}active{% endif %}">📊 Dashboard <span class="unified-nav-badge">T2</span></a>
+      <a href="/hackathon/team.html" class="unified-nav-item {% if active_page == 'team' %}active{% endif %}">👥 Team <span class="unified-nav-badge">T1</span></a>
+      <a href="/hackathon/submit.html" class="unified-nav-item {% if active_page == 'submit' %}active{% endif %}">📝 Submit <span class="unified-nav-badge">T1</span></a>
+      <a href="/api/v1/projects" target="_blank" class="unified-nav-item">⚡ REST API <span class="unified-nav-badge">T4</span></a>
+      <a href="/export/csv" class="unified-export-btn" title="Download CSV Score Export (Organizer)">📥 Export CSV (T2)</a>
+    </div>
+  </div>
+</header>

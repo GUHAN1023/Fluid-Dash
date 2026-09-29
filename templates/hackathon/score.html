@@ -43,36 +43,16 @@
 </head>
 <body>
 
-  <!-- Top Navigation Bar (Judge Mode) -->
-  <header class="navbar">
-    <div class="container navbar-inner">
-      <a href="../index.html" class="brand-logo" id="nav-brand-logo">
-        <span class="brand-icon">🐕</span>
-        <span>DOGFOOD</span>
-      </a>
-
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html" class="nav-link">Overview</a></li>
-          <li><a href="gallery.html" class="nav-link">Gallery</a></li>
-          <li><a href="score.html" class="nav-link active">Judge Scoring</a></li>
-        </ul>
-      </nav>
-
-      <div class="nav-actions">
-        <span class="badge badge-active"><span class="badge-dot"></span> Judge Session</span>
-        <a href="gallery.html" class="btn btn-outline btn-sm">Exit Scoring</a>
-      </div>
-    </div>
-  </header>
+  <!-- Unified DOGFOOD Navigation Header -->
+  {% include 'nav_header.html' %}
 
   <!-- Page Breadcrumbs -->
   <div class="page-header-strip">
     <div class="container">
       <div class="breadcrumbs">
-        <a href="../index.html">Platform Home</a>
+        <a href="/">Platform Home</a>
         <span class="breadcrumb-sep">/</span>
-        <a href="index.html">{{ event.name }}</a>
+        <a href="/">{{ event.name }}</a>
         <span class="breadcrumb-sep">/</span>
         <span class="breadcrumb-current">Scoring Workspace</span>
       </div>

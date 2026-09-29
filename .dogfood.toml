@@ -2,8 +2,8 @@
 base_url = "http://127.0.0.1:5000"
 
 [tiers]
-claimed = ["T1", "T2"]
-pitch = "Self-hostable hackathon submission and judging platform with backend-enforced role isolation and rubric scoring."
+claimed = ["T1", "T2", "T3", "T4"]
+pitch = "Self-hostable hackathon platform with community voting, REST API, verifiable certificates, and role isolation."
 
 [routes]
 gallery = "/hackathon/gallery.html"
@@ -11,6 +11,13 @@ submit = "/hackathon/submit"
 judge_scores = "/judge/scores/judge_a"
 peer_scores = "/judge/scores/judge_a"
 csv_export = "/export/csv"
+vote = "/api/vote"
+comment = "/api/projects/prj_01/comments"
+ballot = "/api/ballot"
+api_projects = "/api/v1/projects"
+certificate = "/api/v1/certificate"
+bulk_export = "/api/v1/export"
+embed_widget = "/embed/gallery"
 
 [auth]
 organizer = "Cookie: session=dogfood_cookie_organizer_2026"

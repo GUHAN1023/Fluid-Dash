@@ -2,11 +2,11 @@
 
 > "Build the platform that will judge you."
 
-A clean, self-hostable, offline-first hackathon submission and judging platform built for DOGFOOD 2026.
+A clean, self-hostable, offline-first hackathon submission and judging platform built for DOGFOOD 2026 by Hackathon Raptors.
 
 ---
 
-## 🚀 Quickstart (One Command)
+## 🚀 Quickstart (One Command Rule)
 
 ### Using Docker Compose
 ```bash
@@ -33,10 +33,12 @@ Open [http://localhost:5000](http://localhost:5000) or [http://localhost:5000/ha
 
 ## 📋 Tiers Claimed & Verification
 
-| Tier | Status | Verification |
+| Tier | Status | Verification Summary |
 |---|---|---|
 | **T1 CORE** | **CLAIMED & VERIFIED** | Public gallery with 41 fixture projects, offline styling, deadline enforcement, team management |
-| **T2 JUDGING** | **CLAIMED & VERIFIED** | Role isolation in backend view, judge score privacy, organizer CSV export, weighted rubrics |
+| **T2 JUDGING** | **CLAIMED & VERIFIED** | Role isolation in backend view, judge score privacy (403 on peers), organizer CSV export, weighted rubrics |
+| **T3 PUBLIC** | **CLAIMED & VERIFIED** | Email-gated community voting, randomized ballot ordering, duplicate vote prevention (409 Conflict), audit comments |
+| **T4 STRETCH** | **CLAIMED & VERIFIED** | Public REST API (`/api/v1/projects`), cryptographically signed certificates (SHA-256), bulk export, embed widget |
 
 ### Acceptance Report
 Run:
@@ -47,7 +49,7 @@ Output:
 ```text
 DOGFOOD 2026 acceptance report
 portal: http://127.0.0.1:5000
-claimed: T1 T2
+claimed: T1 T2 T3 T4
 fixtures: fixtures.json
 
 T1  gallery is public ................. PASS
@@ -57,9 +59,29 @@ T2  judge sees own scores ............. PASS
 T2  judge cannot see peer scores ...... PASS
 T2  participant blocked ............... PASS
 T2  csv export works .................. PASS
+T3  community voting works ............ PASS
+T3  duplicate vote blocked ............ PASS
+T3  project comments work ............. PASS
+T3  randomized ballot order ........... PASS
+T4  rest api returns projects ......... PASS
+T4  certificate generation works ...... PASS
+T4  bulk export works ................. PASS
+T4  embeddable widget works ........... PASS
 
-claimed T1 T2, verified T1 T2
+claimed T1 T2 T3 T4, verified T1 T2 T3 T4
 ```
+
+---
+
+## 🧭 Navigation & Role Switcher
+
+Every page contains the **Unified DOGFOOD Navigation Header** with an integrated, 1-click role switcher:
+
+- **👑 Organizer**: Full access, live progress dashboard, and CSV export.
+- **⚖️ Judge A**: Review assigned projects, submit rubric scores, strictly isolated from Judge B's scores.
+- **⚖️ Judge B**: Review assigned projects, strictly blocked from viewing Judge A's scores.
+- **💻 Participant**: Manage team membership, strictly blocked from judging endpoints.
+- **👁️ Visitor**: Browse 41 public projects, cast community votes, and query the REST API.
 
 ---
 

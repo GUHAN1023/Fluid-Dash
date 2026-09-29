@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Voting (T3) - DOGFOOD Hackathon</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .vote-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      background: #FFFFFF;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .vote-card:hover {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Unified DOGFOOD Navigation Header -->
+  {% include 'nav_header.html' %}
+
+
+  <main style="padding: 40px 0 80px;">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto 36px; text-align: center;">
+        <span class="badge badge-winner" style="margin-bottom: 12px;">Tier 3 Feature: Public Community Ballot</span>
+        <h1 style="font-size: 2.25rem; font-weight: 700; color: var(--color-text-title); margin-bottom: 8px;">Cast Your Community Vote</h1>
+        <p style="color: var(--color-text-muted); font-size: 1rem; line-height: 1.6;">
+          Support your favorite submissions. Projects on your ballot are displayed in a randomized order to eliminate ordering bias.
+        </p>
+        <div style="margin-top: 16px; padding: 12px 20px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-md); font-size: 0.875rem; color: #1E40AF;">
+          🔒 <strong>T3 Integrity Rule:</strong> Exact vote tallies are encrypted and hidden until the community voting window closes. Limit 1 vote per verified email.
+        </div>
+      </div>
+
+      <!-- Voting Ballot Cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+        {% for project in projects %}
+        <div class="vote-card" id="card-{{ project.id }}">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span class="badge badge-track">{{ project.track_name }}</span>
+              <span style="font-size: 0.75rem; color: var(--color-text-subtle);">#{{ loop.index }}</span>
+            </div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--color-text-title); margin-bottom: 6px;">
+              <a href="/hackathon/project-detail.html?id={{ project.id }}" style="color: inherit; text-decoration: none;">{{ project.title }}</a>
+            </h3>
+            <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 8px;">By Team {{ project.team_name }}</p>
+            <p style="font-size: 0.875rem; color: var(--color-text-body); line-height: 1.5; margin-bottom: 16px;">{{ project.summary }}</p>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="castVote('{{ project.id }}', '{{ project.title }}')" style="width: 100%;">
+            🗳️ Vote for This Project
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
+
+  <script>
+    async function castVote(projectId, projectTitle) {
+      const email = prompt(`Enter your community email to vote for "${projectTitle}":\n(One vote per email address)`);
+      if (!email || !email.trim()) return;
+
+      try {
+        const res = await fetch('/api/vote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ project_id: projectId, voter_email: email.trim() })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert('✅ ' + data.message);
+        } else {
+          alert('⚠️ ' + data.message);
+        }
+      } catch (e) {
+        alert('Network error: ' + e);
+      }
+    }
+  </script>
+</body>
+</html>

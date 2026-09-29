@@ -25,36 +25,16 @@
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
-  <header class="navbar">
-    <div class="container navbar-inner">
-      <a href="../index.html" class="brand-logo" id="nav-brand-logo">
-        <span class="brand-icon">🐕</span>
-        <span>DOGFOOD</span>
-      </a>
-
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html" class="nav-link">Overview</a></li>
-          <li><a href="team.html" class="nav-link active">Team Setup</a></li>
-          <li><a href="submit.html" class="nav-link">Submit Project</a></li>
-          <li><a href="gallery.html" class="nav-link">Gallery</a></li>
-        </ul>
-      </nav>
-
-      <div class="nav-actions">
-        <span class="badge badge-active"><span class="badge-dot"></span> Participant</span>
-      </div>
-    </div>
-  </header>
+  <!-- Unified DOGFOOD Navigation Header -->
+  {% include 'nav_header.html' %}
 
   <!-- Breadcrumbs -->
   <div class="page-header-strip">
     <div class="container">
       <div class="breadcrumbs">
-        <a href="../index.html">Platform Home</a>
+        <a href="/">Platform Home</a>
         <span class="breadcrumb-sep">/</span>
-        <a href="index.html">{{ event.name }}</a>
+        <a href="/">{{ event.name }}</a>
         <span class="breadcrumb-sep">/</span>
         <span class="breadcrumb-current">Team Setup</span>
       </div>

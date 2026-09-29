@@ -24,31 +24,11 @@
 </head>
 <body>
 
-  <!-- Top Navigation Bar (Organizer State) -->
-  <header class="navbar">
-    <div class="container navbar-inner">
-      <a href="index.html" class="brand-logo" id="nav-brand-logo">
-        <span class="brand-icon">🐕</span>
-        <span>DOGFOOD</span>
-      </a>
+  <!-- Unified DOGFOOD Navigation Header -->
+  {% include 'nav_header.html' %}
 
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html" class="nav-link">Hackathons</a></li>
-          <li><a href="dashboard.html" class="nav-link active">My Hackathons</a></li>
-          <li><a href="create.html" class="nav-link">Create Hackathon</a></li>
-        </ul>
-      </nav>
 
-      <div class="nav-actions">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 0.875rem; font-weight: 600; color: var(--color-text-title);">Organizer</span>
-          <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 0.875rem; font-weight: 700;">OG</div>
-        </div>
-        <a href="create.html" class="btn btn-primary btn-sm">+ Create Hackathon</a>
-      </div>
-    </div>
-  </header>
+
 
   <!-- Page Header -->
   <div class="container">

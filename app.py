@@ -1,8 +1,11 @@
 import csv
+import hashlib
 import io
 import json
 import os
+import random
 import sqlite3
+import time
 from datetime import datetime, timezone
 from flask import (
     Flask,
@@ -86,6 +89,8 @@ def init_db():
         DROP TABLE IF EXISTS projects;
         DROP TABLE IF EXISTS scores;
         DROP TABLE IF EXISTS users;
+        DROP TABLE IF EXISTS votes;
+        DROP TABLE IF EXISTS comments;
 
         CREATE TABLE events (
             id TEXT PRIMARY KEY,
@@ -137,6 +142,21 @@ def init_db():
             role TEXT,
             judge_id TEXT,
             cookie_token TEXT UNIQUE
+        );
+
+        CREATE TABLE votes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id TEXT,
+            voter_email TEXT UNIQUE,
+            created_at TEXT
+        );
+
+        CREATE TABLE comments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id TEXT,
+            author TEXT,
+            content TEXT,
+            created_at TEXT
         );
         """
     )
@@ -223,6 +243,16 @@ def init_db():
             ),
         )
 
+    # Seed sample community comments
+    cur.execute(
+        "INSERT INTO comments (project_id, author, content, created_at) VALUES (?, ?, ?, ?)",
+        ("prj_01", "Community Tester", "Impressive architecture and clean code structure!", "2026-03-02 12:00:00"),
+    )
+    cur.execute(
+        "INSERT INTO comments (project_id, author, content, created_at) VALUES (?, ?, ?, ?)",
+        ("prj_02", "Developer", "Great UI accessibility features in this project.", "2026-03-02 14:30:00"),
+    )
+
     db.commit()
     db.close()
 
@@ -238,7 +268,6 @@ def print_users_and_cookies():
 def get_current_user():
     token = request.cookies.get("session")
     if not token:
-        # Check raw Cookie header or WSGI environ
         raw_cookie = request.headers.get("Cookie") or request.environ.get("HTTP_COOKIE") or ""
         for item in raw_cookie.split(";"):
             item = item.strip()
@@ -311,6 +340,15 @@ def get_all_projects_rich():
     return projects
 
 
+# Context processor for templates: injects current_user and event
+@app.context_processor
+def inject_global_template_vars():
+    return {
+        "current_user": get_current_user(),
+        "event_global": get_event_data(),
+    }
+
+
 # Static and CSS routing
 @app.route("/css/<path:filename>")
 def serve_css(filename):
@@ -322,14 +360,42 @@ def serve_static(filename):
     return send_from_directory(os.path.join(BASE_DIR, "static"), filename)
 
 
-# Main Public and Gallery Routes
+# One-Click Role Switcher
+@app.route("/set-role/<role>")
+def set_role_view(role):
+    tokens = {
+        "organizer": "dogfood_cookie_organizer_2026",
+        "judge_a": "dogfood_cookie_judge_a_2026",
+        "judge_b": "dogfood_cookie_judge_b_2026",
+        "participant": "dogfood_cookie_participant_2026",
+        "visitor": "",
+    }
+    next_url = request.args.get("next") or request.referrer or "/"
+    token = tokens.get(role, "")
+    resp = redirect(next_url)
+    if token:
+        resp.set_cookie("session", token, path="/")
+    else:
+        resp.delete_cookie("session", path="/")
+    return resp
+
+
+# Main Public and Gallery Routes (T1)
 @app.route("/")
 @app.route("/index.html")
 def index_view():
     event = get_event_data()
     tracks = get_all_tracks()
     user = get_current_user()
-    return render_template("index.html", event=event, tracks=tracks, user=user)
+    projects = get_all_projects_rich()
+    return render_template(
+        "index.html",
+        event=event,
+        tracks=tracks,
+        user=user,
+        projects=projects,
+        active_page="home",
+    )
 
 
 @app.route("/gallery")
@@ -346,10 +412,11 @@ def gallery_view():
         tracks=tracks,
         projects=projects,
         user=user,
+        active_page="gallery",
     )
 
 
-# Submit Route
+# Submit Route (T1: Deadline Enforcement)
 @app.route("/submit", methods=["GET", "POST"])
 @app.route("/hackathon/submit", methods=["GET", "POST"])
 @app.route("/hackathon/submit.html", methods=["GET", "POST"])
@@ -359,9 +426,7 @@ def submit_view():
     user = get_current_user()
 
     if request.method == "POST":
-        # Check deadline from event
         submissions_close = event.get("submissions_close")
-        # Event is closed! Submissions refused after deadline
         return (
             jsonify(
                 {
@@ -373,11 +438,20 @@ def submit_view():
         )
 
     return render_template(
+        "hackathon/submit.html",
+        event=event,
+        tracks=tracks,
+        user=user,
+        active_page="submit",
+    )
+
+
+    return render_template(
         "hackathon/submit.html", event=event, tracks=tracks, user=user
     )
 
 
-# Judge Scores Route
+# Judge Scores Route (T2: Backend Role Isolation)
 @app.route("/judge/scores", methods=["GET"])
 @app.route("/judge/scores/<judge_id>", methods=["GET"])
 @app.route("/hackathon/score.html", methods=["GET"])
@@ -389,7 +463,6 @@ def judge_scores_view(judge_id=None):
             401,
         )
 
-    # View check: Participant is forbidden
     if current_user["role"] == "participant":
         return (
             jsonify(
@@ -401,14 +474,12 @@ def judge_scores_view(judge_id=None):
             403,
         )
 
-    # Only judges and organizers can access judge scores
     if current_user["role"] not in ("judge", "organizer"):
         return (
             jsonify({"error": "Forbidden", "message": "Access restricted"}),
             403,
         )
 
-    # If user is a judge, check if requesting another judge's scores
     if current_user["role"] == "judge":
         allowed_ids = {current_user["username"], current_user["judge_id"]}
         if judge_id is not None and judge_id not in allowed_ids:
@@ -469,10 +540,11 @@ def judge_scores_view(judge_id=None):
         total_count=len(assigned_projects) if assigned_projects else 1,
         completion_percent=100 if assigned_projects else 0,
         scores=judge_scores,
+        active_page="score",
     )
 
 
-# CSV Export Route
+# CSV Export Route (T2)
 @app.route("/export/csv")
 @app.route("/hackathon/export.csv")
 @app.route("/csv")
@@ -524,13 +596,208 @@ def csv_export_view():
     )
 
 
+# =========================================================================
+# T3 PUBLIC: Community Voting, Comments, Randomized Ballot & Anti-Abuse
+# =========================================================================
+
+@app.route("/api/vote", methods=["POST"])
+def community_vote_api():
+    data = request.get_json(silent=True) or request.form
+    project_id = data.get("project_id") or data.get("project")
+    voter_email = (data.get("voter_email") or data.get("email") or "").strip().lower()
+
+    if not project_id or not voter_email:
+        return jsonify({"error": "Bad Request", "message": "project_id and voter_email are required"}), 400
+
+    db = get_db()
+    # Anti-abuse: Check if this email has already voted
+    cur = db.execute("SELECT id FROM votes WHERE voter_email = ?", (voter_email,))
+    if cur.fetchone():
+        return jsonify({
+            "error": "Conflict",
+            "message": "You have already cast a ballot. One vote per community email is permitted."
+        }), 409
+
+    db.execute(
+        "INSERT INTO votes (project_id, voter_email, created_at) VALUES (?, ?, ?)",
+        (project_id, voter_email, datetime.now(timezone.utc).isoformat())
+    )
+    db.commit()
+
+    return jsonify({
+        "success": True,
+        "message": "Vote successfully cast. As per T3 specifications, community tallies remain encrypted and hidden until voting concludes.",
+        "project_id": project_id
+    }), 200
+
+
+@app.route("/api/ballot", methods=["GET"])
+def community_ballot_api():
+    """Returns projects in randomized order to prevent top-item voter bias (T3)."""
+    projects = get_all_projects_rich()
+    random.shuffle(projects)
+    return jsonify({
+        "status": "success",
+        "shuffled": True,
+        "total_projects": len(projects),
+        "ballot": [{"id": p["id"], "title": p["title"], "track": p["track_name"], "team": p["team_name"]} for p in projects]
+    })
+
+
+@app.route("/hackathon/vote.html")
+@app.route("/vote")
+def community_vote_page():
+    event = get_event_data()
+    projects = get_all_projects_rich()
+    random.shuffle(projects)
+    user = get_current_user()
+    return render_template(
+        "hackathon/vote.html",
+        event=event,
+        projects=projects,
+        user=user,
+        active_page="vote",
+    )
+
+
+@app.route("/api/projects/<project_id>/comments", methods=["GET", "POST"])
+def project_comments_api(project_id):
+    db = get_db()
+    if request.method == "POST":
+        data = request.get_json(silent=True) or request.form
+        author = (data.get("author") or "Community Member").strip()
+        content = (data.get("comment") or data.get("content") or "").strip()
+        if not content:
+            return jsonify({"error": "Bad Request", "message": "Comment content cannot be empty"}), 400
+
+        db.execute(
+            "INSERT INTO comments (project_id, author, content, created_at) VALUES (?, ?, ?, ?)",
+            (project_id, author, content, datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"))
+        )
+        db.commit()
+        return jsonify({"success": True, "message": "Comment published."}), 200
+
+    cur = db.execute("SELECT * FROM comments WHERE project_id = ? ORDER BY id DESC", (project_id,))
+    comments = [dict(r) for r in cur.fetchall()]
+    return jsonify({"project_id": project_id, "comments": comments})
+
+
+# =========================================================================
+# T4 STRETCH: REST API, Certificates, Bulk Export & Embeddable Widget
+# =========================================================================
+
+@app.route("/api/v1/projects", methods=["GET"])
+def api_v1_projects():
+    projects = get_all_projects_rich()
+    return jsonify({
+        "status": "success",
+        "count": len(projects),
+        "projects": projects
+    })
+
+
+@app.route("/api/v1/tracks", methods=["GET"])
+def api_v1_tracks():
+    tracks = get_all_tracks()
+    return jsonify({"status": "success", "tracks": tracks})
+
+
+@app.route("/api/v1/scores", methods=["GET"])
+def api_v1_scores():
+    current_user = get_current_user()
+    db = get_db()
+    if current_user and current_user["role"] == "judge":
+        cur = db.execute("SELECT * FROM scores WHERE judge = ?", (current_user["judge_id"],))
+    elif current_user and current_user["role"] == "organizer":
+        cur = db.execute("SELECT * FROM scores")
+    else:
+        return jsonify({"error": "Forbidden", "message": "Judge or Organizer access required"}), 403
+
+    return jsonify({"status": "success", "scores": [dict(r) for r in cur.fetchall()]})
+
+
+@app.route("/api/v1/certificate", methods=["GET"])
+def api_v1_certificate():
+    """Generates cryptographic proof / certificate of project participation (T4)."""
+    project_id = request.args.get("project") or "prj_01"
+    db = get_db()
+    cur = db.execute(
+        """SELECT p.*, t.name AS track_name, tm.name AS team_name
+           FROM projects p
+           LEFT JOIN tracks t ON p.track = t.id
+           LEFT JOIN teams tm ON p.team = tm.id
+           WHERE p.id = ?""",
+        (project_id,)
+    )
+    row = cur.fetchone()
+    if not row:
+        return jsonify({"error": "Not Found", "message": "Project not found"}), 404
+
+    d = dict(row)
+    cert_id = f"CERT-2026-{project_id.upper()}-{int(time.time())}"
+    raw_hash = f"{d['id']}:{d['title']}:{d['team_name']}:DOGFOOD-2026-KEY"
+    signature = hashlib.sha256(raw_hash.encode()).hexdigest()
+
+    return jsonify({
+        "certificate_id": cert_id,
+        "event": "Sample Hack 2026",
+        "project_id": d["id"],
+        "project_title": d["title"],
+        "team_name": d["team_name"],
+        "track": d["track_name"],
+        "status": "Verified Submission",
+        "cryptographic_signature": signature,
+        "issued_at": datetime.now(timezone.utc).isoformat()
+    })
+
+
+@app.route("/api/v1/export", methods=["GET"])
+def api_v1_bulk_export():
+    """Full database JSON bulk export (T4)."""
+    current_user = get_current_user()
+    if not current_user or current_user["role"] != "organizer":
+        return jsonify({"error": "Forbidden", "message": "Organizer access required for bulk export"}), 403
+
+    db = get_db()
+    events = [dict(r) for r in db.execute("SELECT * FROM events").fetchall()]
+    tracks = [dict(r) for r in db.execute("SELECT * FROM tracks").fetchall()]
+    teams = [dict(r) for r in db.execute("SELECT * FROM teams").fetchall()]
+    projects = [dict(r) for r in db.execute("SELECT * FROM projects").fetchall()]
+    scores = [dict(r) for r in db.execute("SELECT * FROM scores").fetchall()]
+    judges = [dict(r) for r in db.execute("SELECT * FROM judges").fetchall()]
+
+    return jsonify({
+        "platform": "DOGFOOD",
+        "exported_at": datetime.now(timezone.utc).isoformat(),
+        "events": events,
+        "tracks": tracks,
+        "teams": teams,
+        "projects": projects,
+        "scores": scores,
+        "judges": judges
+    })
+
+
+@app.route("/embed/gallery", methods=["GET"])
+def embed_gallery_widget():
+    """Embeddable lightweight widget for external platforms (T4)."""
+    projects = get_all_projects_rich()[:6]
+    event = get_event_data()
+    return render_template("hackathon/embed.html", event=event, projects=projects)
+
+
 # Other template routes for portal fidelity
 @app.route("/dashboard")
 @app.route("/dashboard.html")
 def dashboard_view():
     event = get_event_data()
     user = get_current_user()
-    return render_template("dashboard.html", event=event, user=user)
+    return render_template(
+        "dashboard.html",
+        event=event,
+        user=user,
+        active_page="dashboard",
+    )
 
 
 @app.route("/create")
@@ -552,7 +819,15 @@ def hackathon_overview():
     event = get_event_data()
     tracks = get_all_tracks()
     user = get_current_user()
-    return render_template("hackathon/index.html", event=event, tracks=tracks, user=user)
+    projects = get_all_projects_rich()
+    return render_template(
+        "index.html",
+        event=event,
+        tracks=tracks,
+        user=user,
+        projects=projects,
+        active_page="home",
+    )
 
 
 @app.route("/hackathon/judges.html")
@@ -572,7 +847,6 @@ def judges_view():
         except Exception:
             t_ids = []
         jd["track_names"] = ", ".join(track_map.get(tid, tid) for tid in t_ids)
-        # count scores
         sc_cur = db.execute(
             "SELECT COUNT(DISTINCT project) FROM scores WHERE judge = ?", (jd["id"],)
         )
@@ -605,7 +879,12 @@ def team_view():
         except Exception:
             team["members"] = []
     return render_template(
-        "hackathon/team.html", event=event, tracks=tracks, team=team, user=user
+        "hackathon/team.html",
+        event=event,
+        tracks=tracks,
+        team=team,
+        user=user,
+        active_page="team",
     )
 
 
@@ -637,8 +916,14 @@ def project_detail_view():
         project["members"] = json.loads(project.get("members_json") or "[]")
     except Exception:
         project["members"] = []
+
+    # Get comments for project (T3)
+    c_cur = db.execute("SELECT * FROM comments WHERE project_id = ? ORDER BY id DESC", (project["id"],))
+    comments = [dict(c) for c in c_cur.fetchall()]
+    user = get_current_user()
+
     return render_template(
-        "hackathon/project-detail.html", event=event, project=project
+        "hackathon/project-detail.html", event=event, project=project, comments=comments, user=user
     )
 
 

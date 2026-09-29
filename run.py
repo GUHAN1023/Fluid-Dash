@@ -8,6 +8,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -167,6 +168,83 @@ def build_checks(cfg, fixture):
             c.note(f"got {status or 'no response'}, wanted 200")
         else:
             c.note("got 200 but the first line has no comma in it")
+    checks.append(c)
+
+    # --- T3 -------------------------------------------------------------
+    c = Check("T3", "community voting works")
+    status, body = request(
+        url("vote", ""),
+        method="POST",
+        body={"project_id": "prj_01", "voter_email": f"tester_t3_{int(time.time()*1000)}@example.org"},
+    )
+    c.ok = status == 200
+    if not c.ok:
+        c.note(f"POST {url('vote')}")
+        c.note(f"got {status or 'no response'}, wanted 200")
+    checks.append(c)
+
+    c = Check("T3", "duplicate vote blocked")
+    dup_email = f"dup_voter_{int(time.time()*1000)}@example.org"
+    request(url("vote", ""), method="POST", body={"project_id": "prj_01", "voter_email": dup_email})
+    status, _ = request(url("vote", ""), method="POST", body={"project_id": "prj_02", "voter_email": dup_email})
+    c.ok = status in (400, 409)
+    if not c.ok:
+        c.note(f"POST {url('vote')}")
+        c.note(f"duplicate email got {status or 'no response'}, wanted 400 or 409")
+    checks.append(c)
+
+    c = Check("T3", "project comments work")
+    status, _ = request(
+        url("comment", ""),
+        method="POST",
+        body={"author": "Test Reviewer", "comment": "Verification comment"},
+    )
+    c.ok = status == 200
+    if not c.ok:
+        c.note(f"POST {url('comment')}")
+        c.note(f"got {status or 'no response'}, wanted 200")
+    checks.append(c)
+
+    c = Check("T3", "randomized ballot order")
+    status, body = request(url("ballot", ""))
+    c.ok = status == 200 and "ballot" in body
+    if not c.ok:
+        c.note(f"GET {url('ballot')}")
+        c.note(f"got {status or 'no response'}, wanted 200 with ballot list")
+    checks.append(c)
+
+    # --- T4 -------------------------------------------------------------
+    c = Check("T4", "rest api returns projects")
+    status, body = request(url("api_projects", ""))
+    c.ok = status == 200 and "projects" in body
+    if not c.ok:
+        c.note(f"GET {url('api_projects')}")
+        c.note(f"got {status or 'no response'}, wanted 200 with projects json")
+    checks.append(c)
+
+    c = Check("T4", "certificate generation works")
+    status, body = request(url("certificate", "?project=prj_01"))
+    c.ok = status == 200 and "certificate_id" in body
+    if not c.ok:
+        c.note(f"GET {url('certificate')}")
+        c.note(f"got {status or 'no response'}, wanted 200 with certificate_id")
+    checks.append(c)
+
+    c = Check("T4", "bulk export works")
+    status, body = request(url("bulk_export", ""), header=auth.get("organizer"))
+    c.ok = status == 200 and "events" in body
+    if not c.ok:
+        c.note(f"GET {url('bulk_export')}")
+        c.note("sent as organizer")
+        c.note(f"got {status or 'no response'}, wanted 200 with database dump")
+    checks.append(c)
+
+    c = Check("T4", "embeddable widget works")
+    status, body = request(url("embed_widget", ""))
+    c.ok = status == 200 and "DOGFOOD" in body
+    if not c.ok:
+        c.note(f"GET {url('embed_widget')}")
+        c.note(f"got {status or 'no response'}, wanted 200")
     checks.append(c)
 
     return checks
