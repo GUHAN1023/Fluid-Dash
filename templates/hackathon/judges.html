@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Judge Assignment - DOGFOOD Organizer</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="brand-logo" id="nav-brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Overview</a></li>
+          <li><a href="judges.html" class="nav-link active">Judges</a></li>
+          <li><a href="rubric.html" class="nav-link">Rubric</a></li>
+          <li><a href="progress.html" class="nav-link">Progress</a></li>
+          <li><a href="control.html" class="nav-link">Control Center</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <span class="badge badge-active"><span class="badge-dot"></span> Organizer Mode</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Breadcrumbs -->
+  <div class="page-header-strip">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="../index.html">Platform Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="index.html">{{ event.name }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Judge Assignment</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main style="padding: 40px 0 80px;">
+    <div class="container">
+
+      <!-- Header -->
+      <div style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h1 style="font-size: 2rem; font-weight: 700; color: var(--color-text-title); letter-spacing: -0.02em;">Judge Assignment & Invites</h1>
+          <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 4px;">Invite evaluators, configure tracks, and assign project queues to judges.</p>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button type="button" class="btn btn-outline" id="btn-auto-assign">⚡ Auto-Assign Projects</button>
+        </div>
+      </div>
+
+      <!-- Section 1: Invite Judge Form -->
+      <div class="card" style="margin-bottom: 32px;">
+        <div class="card-header">
+          <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">Invite a New Judge</h2>
+        </div>
+        <div class="card-body">
+          <form id="invite-judge-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) 140px; gap: 16px; align-items: flex-end;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="judge-name">Full Name</label>
+              <input type="text" id="judge-name" class="form-input" placeholder="e.g. Dr. Jane Doe">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="judge-email">Email Address</label>
+              <input type="email" id="judge-email" class="form-input" placeholder="judge@domain.com">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="judge-track">Assigned Track</label>
+              <select id="judge-track" class="form-select">
+                <option value="all">All Tracks</option>
+                {% for track in tracks %}
+                <option value="{{ track.id }}">{{ track.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <button type="button" class="btn btn-primary" id="btn-send-invite">Send Invite</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Section 2: Invited Judges Table -->
+      <div class="card" style="margin-bottom: 32px;">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">Invited Judges Directory</h2>
+          <span style="font-size: 0.8125rem; color: var(--color-text-muted);">Total: {{ judges|length }} Judges</span>
+        </div>
+        <div class="card-body" style="padding: 0;">
+          {% if not judges %}
+          <!-- Empty State (No dummy data) -->
+          <div class="empty-state" style="border: none; margin: 0; padding: 48px 24px;">
+            <div class="empty-state-icon">⚖️</div>
+            <h3 class="empty-state-title">No judges invited yet</h3>
+            <p class="empty-state-desc">Use the form above to send email invites to industry experts and sponsors.</p>
+          </div>
+          {% endif %}
+
+          {% if judges %}
+          <div class="data-table-container" style="border: none; border-radius: 0;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Judge Name</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Assigned Track</th>
+                  <th>Projects Count</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for judge in judges %}
+                <tr>
+                  <td><strong>{{ judge.name }}</strong></td>
+                  <td>{{ judge.email }}</td>
+                  <td><span class="badge badge-active">Invited</span></td>
+                  <td>{{ judge.track_names }}</td>
+                  <td>{{ judge.project_count }} Projects</td>
+                  <td style="text-align: right;">
+                    <button class="btn btn-sm btn-outline">Resend</button>
+                    <button class="btn btn-sm btn-danger">Remove</button>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Section 3: Interactive Assignment Panel (Judge List <-> Project Checkboxes) -->
+      <div class="card">
+        <div class="card-header">
+          <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">Manual Project Allocation Panel</h2>
+          <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 2px;">Pair individual judges directly with submitted projects.</p>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            
+            <!-- Left Pane: Select Judge -->
+            <div style="border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 16px;">
+              <h3 style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text-title); margin-bottom: 12px;">1. Select Judge</h3>
+              <div class="empty-state" style="padding: 24px; margin: 0; background: var(--color-canvas);">
+                <span style="font-size: 0.875rem; color: var(--color-text-muted);">No judges available to select</span>
+              </div>
+            </div>
+
+            <!-- Right Pane: Check Projects -->
+            <div style="border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 16px;">
+              <h3 style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text-title); margin-bottom: 12px;">2. Projects to Assign</h3>
+              <div class="empty-state" style="padding: 24px; margin: 0; background: var(--color-canvas);">
+                <span style="font-size: 0.875rem; color: var(--color-text-muted);">No submitted projects available to assign</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>© 2026 DOGFOOD Multi-Hackathon Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

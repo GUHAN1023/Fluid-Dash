@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Hackathon - DOGFOOD Platform</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="brand-logo" id="nav-brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Hackathons</a></li>
+          <li><a href="dashboard.html" class="nav-link">My Hackathons</a></li>
+          <li><a href="create.html" class="nav-link active">Create Hackathon</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="dashboard.html" class="btn btn-outline btn-sm">Cancel</a>
+        <a href="dashboard.html" class="btn btn-primary btn-sm">Save Hackathon</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Breadcrumbs Strip -->
+  <div class="page-header-strip">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="index.html">Platform Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="dashboard.html">My Hackathons</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Create New Hackathon</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Form -->
+  <main style="padding: 40px 0 80px;">
+    <div class="container container-narrow">
+      
+      <div style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h1 style="font-size: 2rem; font-weight: 700; color: var(--color-text-title); letter-spacing: -0.02em;">Create a Hackathon</h1>
+          <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 4px;">Set up your challenge details, tracks, schedule, and prizes.</p>
+        </div>
+
+        <!-- Draft / Published Visual Toggle -->
+        <div style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; padding: 8px 16px; border: 1px solid var(--color-border); border-radius: var(--radius-lg);">
+          <span style="font-size: 0.875rem; font-weight: 600; color: var(--color-text-title);">Status:</span>
+          <div class="switch-control">
+            <span style="font-size: 0.8125rem; color: var(--color-text-muted);">Draft</span>
+            <div class="switch-track" id="publish-toggle-track">
+              <div class="switch-thumb"></div>
+            </div>
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--color-primary);">Published</span>
+          </div>
+        </div>
+      </div>
+
+      <form action="dashboard.html" method="GET" id="create-hackathon-form">
+
+        <!-- Section 1: Basic Information -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">1. Basic Information</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label" for="hackathon-name">Hackathon Name</label>
+              <input type="text" id="hackathon-name" class="form-input" placeholder="e.g. AI Safety & Alignment Hackathon" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="hackathon-tagline">Short Tagline</label>
+              <input type="text" id="hackathon-tagline" class="form-input" placeholder="e.g. Build tools and algorithms for verifiable AI alignment" required>
+              <span class="form-hint">A concise one-line summary displayed on gallery and directory cards.</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="hackathon-description">Full Description & Rules</label>
+              <textarea id="hackathon-description" class="form-textarea" placeholder="Describe the hackathon objectives, eligibility, criteria, and requirements..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Important Dates & Schedule -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">2. Event Schedule</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="date-start">Hackathon Start Date</label>
+                <input type="date" id="date-start" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="date-end">Hackathon End Date</label>
+                <input type="date" id="date-end" class="form-input" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="date-registration">Registration Deadline</label>
+                <input type="date" id="date-registration" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="date-judging">Judging Ends</label>
+                <input type="date" id="date-judging" class="form-input">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Tracks & Focus Areas -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">3. Challenge Tracks</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Add Tracks</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" class="form-input" placeholder="e.g. Open Source Tooling, AI Agents, Dev Tools" id="track-input">
+                <button type="button" class="btn btn-outline" id="btn-add-track">+ Add Track</button>
+              </div>
+              <span class="form-hint">Participants can submit projects under designated tracks.</span>
+            </div>
+
+            <!-- Empty State for Tracks list -->
+            <div style="padding: 16px; background-color: var(--color-canvas); border: 1px dashed var(--color-border); border-radius: var(--radius-md); text-align: center; color: var(--color-text-muted); font-size: 0.875rem;" id="tracks-empty-state">
+              No tracks added yet. Use the field above to add challenge tracks.
+            </div>
+
+            <!-- ==============================================================
+                 TEMPLATE / MARKUP STRUCTURE FOR ADDED TRACK TAG (NO DUMMY DATA)
+                 ============================================================== -->
+            <!--
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;">
+              <span class="badge badge-track" style="display: inline-flex; align-items: center; gap: 6px;">
+                [TRACK_NAME]
+                <button type="button" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);">×</button>
+              </span>
+            </div>
+            -->
+          </div>
+        </div>
+
+        <!-- Section 4: Repeatable Prize Rows -->
+        <div class="card" style="margin-bottom: 32px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">4. Prizes & Awards</h2>
+            <button type="button" class="btn btn-sm btn-outline" id="btn-add-prize-row">+ Add Prize Row</button>
+          </div>
+          <div class="card-body">
+            <!-- Empty state for prizes table -->
+            <div class="empty-state" style="padding: 32px 16px; margin: 0;" id="prizes-empty-state">
+              <div class="empty-state-icon" style="width: 40px; height: 40px; font-size: 1.1rem; margin-bottom: 8px;">🎁</div>
+              <div class="empty-state-title" style="font-size: 1rem;">No prize tiers defined yet</div>
+              <p class="empty-state-desc" style="font-size: 0.875rem; margin-bottom: 16px;">Add prize categories such as 1st Place, 2nd Place, or Track Winner.</p>
+              <button type="button" class="btn btn-sm btn-secondary">+ Add First Prize</button>
+            </div>
+
+            <!-- ==============================================================
+                 TEMPLATE / MARKUP STRUCTURE FOR REPEATABLE PRIZE ROW (NO DUMMY DATA)
+                 ============================================================== -->
+            <!--
+            <div class="data-table-container" style="margin-top: 16px;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Tier / Name</th>
+                    <th>Prize Value / Reward</th>
+                    <th>Associated Track</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input type="text" class="form-input" placeholder="e.g. 1st Place Grand Prize"></td>
+                    <td><input type="text" class="form-input" placeholder="e.g. $10,000 USD"></td>
+                    <td>
+                      <select class="form-select">
+                        <option>General / All Tracks</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-sm btn-danger">Delete</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            -->
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+          <a href="dashboard.html" class="btn btn-outline">Save as Draft</a>
+          <button type="submit" class="btn btn-primary" id="btn-publish-hackathon">Publish Hackathon</button>
+        </div>
+
+      </form>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-top">
+        <div class="brand-logo">
+          <span class="brand-icon">🐕</span>
+          <span>DOGFOOD</span>
+        </div>
+        <ul class="footer-links">
+          <li><a href="index.html">About Platform</a></li>
+          <li><a href="index.html">Rules</a></li>
+          <li><a href="index.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 DOGFOOD Multi-Hackathon Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

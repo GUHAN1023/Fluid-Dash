@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rubric Setup - DOGFOOD Organizer</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .weight-total-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+    .weight-invalid {
+      background-color: #FEE2E2;
+      color: #DC2626;
+      border: 1px solid #FCA5A5;
+    }
+    .weight-valid {
+      background-color: #ECFDF5;
+      color: #059669;
+      border: 1px solid #6EE7B7;
+    }
+    .scale-radio-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .scale-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      background-color: #FFFFFF;
+    }
+    .scale-card.selected {
+      border-color: var(--color-primary);
+      background-color: #EFF6FF;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="brand-logo" id="nav-brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Overview</a></li>
+          <li><a href="judges.html" class="nav-link">Judges</a></li>
+          <li><a href="rubric.html" class="nav-link active">Rubric</a></li>
+          <li><a href="progress.html" class="nav-link">Progress</a></li>
+          <li><a href="control.html" class="nav-link">Control Center</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="btn btn-outline btn-sm">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm">Save Rubric</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Breadcrumbs -->
+  <div class="page-header-strip">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="../index.html">Platform Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="index.html">{{ event.name }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Rubric Setup</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main style="padding: 40px 0 80px;">
+    <div class="container">
+
+      <!-- Header & Running Weight Indicator -->
+      <div style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h1 style="font-size: 2rem; font-weight: 700; color: var(--color-text-title); letter-spacing: -0.02em;">Judging Rubric & Criteria</h1>
+          <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 4px;">Define scoring metrics, weight percentages, and scoring scales for judges.</p>
+        </div>
+
+        <!-- Running Weight Total Indicator (Red when != 100%, Green when == 100%) -->
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="weight-total-indicator weight-invalid" id="weight-indicator">
+            <span>⚠️ Weight Total: 0% / 100% (Must equal 100%)</span>
+          </div>
+          <button type="button" class="btn btn-primary" id="btn-save-rubric">Save Rubric</button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px; align-items: start;">
+
+        <!-- Left Column: Criteria Setup -->
+        <div>
+          <!-- Scale Selector Card -->
+          <div class="card" style="margin-bottom: 24px;">
+            <div class="card-header">
+              <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">1. Score Scale Range</h2>
+              <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin-top: 2px;">Select the granular range judges use per criterion.</p>
+            </div>
+            <div class="card-body">
+              <div class="scale-radio-group">
+                <label class="scale-card selected">
+                  <input type="radio" name="scale" checked style="accent-color: var(--color-primary);">
+                  <div>
+                    <strong style="display: block; font-size: 0.875rem;">1 to 5 Points</strong>
+                    <span style="font-size: 0.75rem; color: var(--color-text-muted);">Standard fast evaluation</span>
+                  </div>
+                </label>
+
+                <label class="scale-card">
+                  <input type="radio" name="scale" style="accent-color: var(--color-primary);">
+                  <div>
+                    <strong style="display: block; font-size: 0.875rem;">1 to 10 Points</strong>
+                    <span style="font-size: 0.75rem; color: var(--color-text-muted);">Detailed fine-grained grading</span>
+                  </div>
+                </label>
+
+                <label class="scale-card">
+                  <input type="radio" name="scale" style="accent-color: var(--color-primary);">
+                  <div>
+                    <strong style="display: block; font-size: 0.875rem;">1 to 100 Scale</strong>
+                    <span style="font-size: 0.75rem; color: var(--color-text-muted);">Percentage-based matrix</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Repeatable Criteria Rows Section -->
+          <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">2. Evaluation Criteria</h2>
+                <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin-top: 2px;">Add weighted evaluation questions.</p>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline" id="btn-add-criterion">+ Add Criterion</button>
+            </div>
+            <div class="card-body">
+              <!-- Empty State (No dummy data) -->
+              <div class="empty-state" id="rubric-empty-state" style="margin: 0; padding: 48px 24px;">
+                <div class="empty-state-icon">📐</div>
+                <h3 class="empty-state-title">No evaluation criteria defined yet</h3>
+                <p class="empty-state-desc">Click below to add your first criterion (e.g. Technical Execution, Impact, Innovation).</p>
+                <button type="button" class="btn btn-primary btn-sm">+ Add First Criterion</button>
+              </div>
+
+              <!-- ==============================================================
+                   TEMPLATE / MARKUP STRUCTURE FOR REPEATABLE CRITERION ROW (NO DUMMY DATA)
+                   ============================================================== -->
+              <!--
+              <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
+                <div class="card" style="border: 1px solid var(--color-border); background-color: var(--color-canvas); padding: 16px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span style="font-weight: 700; font-size: 0.875rem;">Criterion #[INDEX]</span>
+                    <button class="btn btn-sm btn-danger">Delete</button>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                      <label class="form-label">Criterion Name</label>
+                      <input type="text" class="form-input" placeholder="e.g. Technical Execution & Code Quality">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                      <label class="form-label">Weight (%)</label>
+                      <input type="number" class="form-input" placeholder="25" min="0" max="100">
+                    </div>
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Description / Instructions for Judges</label>
+                    <textarea class="form-textarea" style="min-height: 80px;" placeholder="Guide judges on how to assess this criterion..."></textarea>
+                  </div>
+                </div>
+              </div>
+              -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Live Judge View Preview Card -->
+        <aside>
+          <div class="card" style="background-color: var(--color-canvas);">
+            <div class="card-header">
+              <span class="badge badge-active" style="margin-bottom: 8px;">Judge Preview</span>
+              <h3 style="font-size: 1rem; font-weight: 600; color: var(--color-text-title);">How Judges Will See This</h3>
+            </div>
+            <div class="card-body">
+              <p style="font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 16px;">
+                When you add criteria, judges will see interactive sliders mapped directly to each category on their scoring form.
+              </p>
+
+              <div style="background-color: #FFFFFF; border: 1px dashed var(--color-border); border-radius: var(--radius-md); padding: 16px; text-align: center;">
+                <div style="font-size: 0.8125rem; color: var(--color-text-subtle);">Preview will populate when criteria are added.</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>© 2026 DOGFOOD Multi-Hackathon Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

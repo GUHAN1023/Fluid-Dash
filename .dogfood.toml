@@ -1,0 +1,18 @@
+[portal]
+base_url = "http://127.0.0.1:5000"
+
+[tiers]
+claimed = ["T1", "T2"]
+
+[routes]
+gallery = "/hackathon/gallery.html"
+submit = "/hackathon/submit"
+judge_scores = "/judge/scores/judge_a"
+peer_scores = "/judge/scores/judge_a"
+csv_export = "/export/csv"
+
+[auth]
+organizer = "Cookie: session=dogfood_cookie_organizer_2026"
+judge_a = "Cookie: session=dogfood_cookie_judge_a_2026"
+judge_b = "Cookie: session=dogfood_cookie_judge_b_2026"
+participant = "Cookie: session=dogfood_cookie_participant_2026"

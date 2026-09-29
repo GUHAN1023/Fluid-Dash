@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Setup - DOGFOOD Hackathon</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .state-section-divider {
+      margin: 48px 0 24px;
+      padding-top: 24px;
+      border-top: 2px dashed var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="brand-logo" id="nav-brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Overview</a></li>
+          <li><a href="team.html" class="nav-link active">Team Setup</a></li>
+          <li><a href="submit.html" class="nav-link">Submit Project</a></li>
+          <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <span class="badge badge-active"><span class="badge-dot"></span> Participant</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumbs -->
+  <div class="page-header-strip">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="../index.html">Platform Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="index.html">{{ event.name }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Team Setup</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main style="padding: 40px 0 80px;">
+    <div class="container container-narrow">
+
+      <div style="margin-bottom: 32px;">
+        <h1 style="font-size: 2rem; font-weight: 700; color: var(--color-text-title); letter-spacing: -0.02em;">Team Setup</h1>
+        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 4px;">Form a new team or enter an invite code to join existing teammates.</p>
+      </div>
+
+      <!-- ==============================================================
+           STATE (a): CREATE OR JOIN CHOICE (Default View)
+           ============================================================== -->
+      <section id="state-create-or-join">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; color: var(--color-primary); letter-spacing: 0.05em;">State A: Choose Team Option</span>
+        </div>
+
+        <div class="choice-grid">
+          <!-- Card 1: Create a Team -->
+          <div class="card">
+            <div class="card-header">
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">🚀</div>
+              <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--color-text-title);">Create a Team</h2>
+              <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 4px;">Start a new team as the team lead and invite collaborators.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label" for="team-name">Team Name</label>
+                <input type="text" id="team-name" class="form-input" placeholder="e.g. ByteCraft Studio">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="team-track">Primary Track</label>
+                <select id="team-track" class="form-select">
+                  <option value="">Select a track (optional)</option>
+                </select>
+              </div>
+
+              <button type="button" class="btn btn-primary" style="width: 100%;">Create Team & Generate Link</button>
+            </div>
+          </div>
+
+          <!-- Card 2: Join Existing Team -->
+          <div class="card">
+            <div class="card-header">
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">🤝</div>
+              <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--color-text-title);">Join Existing Team</h2>
+              <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 4px;">Have an invite code from your team leader? Enter it here.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label" for="invite-code">Team Invite Code</label>
+                <input type="text" id="invite-code" class="form-input" placeholder="e.g. DOG-TEAM-8941">
+                <span class="form-hint">Ask your team creator for their 8-character invite code.</span>
+              </div>
+
+              <div style="height: 60px;"></div> <!-- Spacing alignment -->
+
+              <button type="button" class="btn btn-outline" style="width: 100%;">Join Team</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Divider -->
+      <div class="state-section-divider">
+        <span style="font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted); letter-spacing: 0.05em;">State B: Team Created View</span>
+        <span style="font-size: 0.75rem; color: var(--color-text-subtle);">Markup for when user belongs to a team</span>
+      </div>
+
+      <!-- ==============================================================
+           STATE (b): TEAM CREATED VIEW
+           Invite Link + Copy Button + Member List Table with CREATOR badge + Leave Team Button
+           ============================================================== -->
+      <section id="state-team-created">
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-title);">{{ team.name if team else 'NorthKiln' }}</h2>
+                <span class="badge badge-live"><span class="badge-dot"></span> Active</span>
+              </div>
+              <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 2px;">Track: {{ team.track_name if team else 'Developer tools' }}</p>
+            </div>
+            
+            <button type="button" class="btn btn-danger btn-sm" id="btn-leave-team">Leave Team</button>
+          </div>
+
+          <div class="card-body">
+            <!-- Shareable Invite Link Box -->
+            <div class="form-group">
+              <label class="form-label">Team Invite Link</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" class="form-input" readonly value="https://dogfood.platform/hackathon/{{ event.id }}/join?code={{ team.id if team else 'tm_01' }}" style="background-color: var(--color-canvas); font-family: monospace; font-size: 0.875rem;">
+                <button type="button" class="btn btn-outline" id="btn-copy-invite">Copy Link</button>
+              </div>
+              <span class="form-hint">Share this URL with your collaborators to invite them to this team.</span>
+            </div>
+
+            <!-- Team Members Roster -->
+            <div style="margin-top: 28px;">
+              <h3 style="font-size: 1rem; font-weight: 600; color: var(--color-text-title); margin-bottom: 12px;">Team Members</h3>
+              
+              {% if not team or not team.members %}
+              <!-- Empty State for Members List (when no other members have joined) -->
+              <div class="empty-state" style="padding: 24px; margin: 0 0 16px;">
+                <div class="empty-state-title" style="font-size: 0.95rem;">No other members joined yet</div>
+                <p class="empty-state-desc" style="font-size: 0.8125rem; margin-bottom: 0;">Share your invite link above with up to 4 teammates.</p>
+              </div>
+              {% endif %}
+
+              {% if team and team.members %}
+              <div class="data-table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Member</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Date Joined</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for m in team.members %}
+                    <tr>
+                      <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                          <div style="width: 28px; height: 28px; border-radius: 50%; background-color: #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">{{ m[0]|upper }}</div>
+                          <span style="font-weight: 600; color: var(--color-text-title);">{{ m }}</span>
+                        </div>
+                      </td>
+                      <td>{{ m }}</td>
+                      <td><span class="badge badge-active">{% if loop.first %}CREATOR{% else %}MEMBER{% endif %}</span></td>
+                      <td>2026-02-27</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span style="font-size: 0.875rem; color: var(--color-text-muted);">Ready to submit your build?</span>
+            <a href="submit.html" class="btn btn-primary btn-sm">Proceed to Project Submission →</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>© 2026 DOGFOOD Multi-Hackathon Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

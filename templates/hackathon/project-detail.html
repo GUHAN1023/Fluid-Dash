@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Details - DOGFOOD Hackathon</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .project-hero-cover {
+      width: 100%;
+      height: 340px;
+      background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 32px;
+      position: relative;
+      border: 1px solid var(--color-border);
+    }
+    .summary-callout {
+      background-color: #EFF6FF;
+      border-left: 4px solid var(--color-primary);
+      padding: 20px 24px;
+      border-radius: var(--radius-md);
+      font-size: 1.0625rem;
+      color: #1E3A8A;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+    .project-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      padding: 16px 0;
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="brand-logo" id="nav-brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Overview</a></li>
+          <li><a href="gallery.html" class="nav-link active">Gallery</a></li>
+          <li><a href="team.html" class="nav-link">Team</a></li>
+          <li><a href="submit.html" class="nav-link">Submit</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="gallery.html" class="btn btn-outline btn-sm">← Back to Gallery</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Breadcrumbs -->
+  <div class="page-header-strip">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="../index.html">Platform Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="index.html">{{ event.name }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="gallery.html">Gallery</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">{{ project.title }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main style="padding: 40px 0 80px;">
+    <div class="container container-narrow">
+
+      <!-- Prev / Next Project Navigation Bar -->
+      <div class="project-nav-bar">
+        <a href="gallery.html" class="btn btn-ghost btn-sm">← Previous Project</a>
+        <span style="font-size: 0.8125rem; color: var(--color-text-muted);">Project Submissions</span>
+        <a href="gallery.html" class="btn btn-ghost btn-sm">Next Project →</a>
+      </div>
+
+      <!-- Project Cover Image Container -->
+      <div class="project-hero-cover">
+        <div style="text-align: center; color: #94A3B8;">
+          <div style="font-size: 3rem; margin-bottom: 8px;">🖼️</div>
+          <div style="font-size: 0.9375rem; font-weight: 500;">Project Preview</div>
+        </div>
+        {% if project.winner %}
+        <!-- Winner Badge overlay -->
+        <div style="position: absolute; top: 20px; right: 20px;">
+          <span class="badge badge-winner" style="font-size: 0.875rem; padding: 6px 14px;">🏆 {{ project.winner }}</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Project Header -->
+      <div style="margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+          <span class="badge badge-track">{{ project.track_name }}</span>
+          <span style="color: var(--color-text-subtle);">•</span>
+          <span style="font-size: 0.875rem; color: var(--color-text-muted);">Submitted by <strong>{{ project.team_name }}</strong></span>
+          <span style="color: var(--color-text-subtle);">•</span>
+          <span style="font-size: 0.875rem; color: var(--color-text-muted);">{{ project.submitted_at }}</span>
+        </div>
+
+        <h1 style="font-size: 2.25rem; font-weight: 700; color: var(--color-text-title); letter-spacing: -0.02em; margin-bottom: 16px;">
+          {{ project.title }}
+        </h1>
+
+        <!-- External Project Links -->
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <a href="{{ project.repo_url }}" class="btn btn-primary" id="btn-repo-link" target="_blank">
+            <span>🐙</span> View Git Repository
+          </a>
+          <a href="#" class="btn btn-outline" id="btn-demo-link">
+            <span>🌐</span> Open Live Demo
+          </a>
+          <a href="score.html" class="btn btn-secondary" style="margin-left: auto;">
+            <span>⚖️</span> Score this Project (Judges)
+          </a>
+        </div>
+      </div>
+
+      <!-- Summary Callout -->
+      <div class="summary-callout">
+        <strong>Executive Summary:</strong>
+        <p style="margin-top: 6px;">{{ project.summary }}</p>
+      </div>
+
+      <!-- Full Project Description Section -->
+      <section class="card" style="margin-bottom: 32px;">
+        <div class="card-header">
+          <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">About the Project</h2>
+        </div>
+        <div class="card-body" style="font-size: 0.95rem; line-height: 1.7; color: var(--color-text-body);">
+          <p style="margin-bottom: 16px;">{{ project.summary }}</p>
+          <div style="background-color: var(--color-canvas); padding: 16px; border-radius: var(--radius-md); font-family: monospace; font-size: 0.875rem;">
+            // Architecture & Tech Stack Details rendered from submission
+          </div>
+        </div>
+      </section>
+
+      <!-- Team Members Roster Card -->
+      <section class="card">
+        <div class="card-header">
+          <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">Team Members & Contributors</h2>
+        </div>
+        <div class="card-body">
+          {% if not project.members %}
+          <div class="empty-state" style="padding: 24px; margin: 0;">
+            <div class="empty-state-title" style="font-size: 0.95rem;">{{ project.team_name }} Roster</div>
+            <p class="empty-state-desc" style="font-size: 0.875rem; margin-bottom: 0;">Contributor profiles and roles will display here.</p>
+          </div>
+          {% endif %}
+
+          {% if project.members %}
+          <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px;">
+            {% for m in project.members %}
+            <div style="display: flex; align-items: center; gap: 10px; background: var(--color-canvas); padding: 10px 16px; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: #CBD5E1; display: flex; align-items: center; justify-content: center; font-weight: 700;">{{ m[0]|upper }}</div>
+              <div>
+                <div style="font-weight: 600; font-size: 0.875rem; color: var(--color-text-title);">{{ m }}</div>
+                <div style="font-size: 0.75rem; color: var(--color-text-muted);">Contributor</div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>© 2026 DOGFOOD Multi-Hackathon Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

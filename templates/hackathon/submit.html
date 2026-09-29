@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Project - DOGFOOD Hackathon</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .upload-dropzone {
+      border: 2px dashed var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 36px 20px;
+      text-align: center;
+      background-color: var(--color-canvas);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .upload-dropzone:hover {
+      border-color: var(--color-primary);
+      background-color: #EFF6FF;
+    }
+    .markdown-editor-box {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .markdown-toolbar {
+      background-color: var(--color-canvas);
+      border-bottom: 1px solid var(--color-border);
+      padding: 8px 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .toolbar-btn {
+      background: none;
+      border: none;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .toolbar-btn:hover {
+      background-color: #E2E8F0;
+      color: var(--color-text-title);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="brand-logo" id="nav-brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Overview</a></li>
+          <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+          <li><a href="team.html" class="nav-link">Team</a></li>
+          <li><a href="submit.html" class="nav-link active">Submit Project</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="gallery.html" class="btn btn-outline btn-sm">Cancel</a>
+        <a href="gallery.html" class="btn btn-primary btn-sm">Submit Project</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Breadcrumbs -->
+  <div class="page-header-strip">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="../index.html">Platform Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="index.html">{{ event.name }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Submit Project</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Form -->
+  <main style="padding: 40px 0 80px;">
+    <div class="container container-narrow">
+
+      <!-- ==============================================================
+           DEADLINE STATUS BANNERS (Both Open & Locked states provided)
+           ============================================================== -->
+      <!-- State 2: Locked Banner (Active because deadline passed) -->
+      <div class="status-banner status-banner-locked" id="banner-locked">
+        <span style="font-size: 1.25rem;">🔒</span>
+        <div>
+          <strong>Submissions are Locked.</strong> The deadline has passed ({{ event.submissions_close }}). Judging is currently underway and projects cannot be edited.
+        </div>
+      </div>
+
+      <!-- Header & Title -->
+      <div style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h1 style="font-size: 2rem; font-weight: 700; color: var(--color-text-title); letter-spacing: -0.02em;">Project Submission</h1>
+          <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 4px;">Enter your project details, media, and code repository for judging.</p>
+        </div>
+
+        <!-- Draft / Final Submission Toggle -->
+        <div style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; padding: 8px 16px; border: 1px solid var(--color-border); border-radius: var(--radius-lg);">
+          <span style="font-size: 0.875rem; font-weight: 600; color: var(--color-text-title);">Status:</span>
+          <div class="switch-control">
+            <span style="font-size: 0.8125rem; color: var(--color-text-muted);">Draft</span>
+            <div class="switch-track" id="submission-toggle-track">
+              <div class="switch-thumb"></div>
+            </div>
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--color-primary);">Final</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Submission Form -->
+      <form action="/submit" method="POST" id="project-submission-form">
+
+        <!-- Card: Basic Project Details -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">1. Project Overview</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label" for="project-title">Project Title</label>
+              <input type="text" id="project-title" name="title" class="form-input" placeholder="e.g. AlignGuard: Automated Adversarial Prompt Tester" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="project-summary">One-line Summary</label>
+              <input type="text" id="project-summary" name="summary" class="form-input" placeholder="e.g. Real-time safety guardrails and benchmark framework for multi-agent LLMs" required>
+              <span class="form-hint">Brief elevator pitch shown on cards in the Public Gallery (max 140 chars).</span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="project-track">Challenge Track</label>
+                <select id="project-track" name="track" class="form-select" required>
+                  <option value="">Select track</option>
+                  {% for track in tracks %}
+                  <option value="{{ track.id }}">{{ track.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="project-team-name">Submitting Team</label>
+                <input type="text" id="project-team-name" name="team" class="form-input" placeholder="Your Team Name">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Code Links & Demos -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">2. Links & Demos</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="repo-url">GitHub / Git Repository URL</label>
+                <input type="url" id="repo-url" class="form-input" placeholder="https://github.com/organization/project" required>
+                <span class="form-hint">Must be public or shared with hackathon judges.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="demo-url">Live Demo / Video URL</label>
+                <input type="url" id="demo-url" class="form-input" placeholder="https://demo-app.com or Loom video URL">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Cover Image & Media Upload -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">3. Cover Image & Screenshots</h2>
+          </div>
+          <div class="card-body">
+            <div class="upload-dropzone">
+              <div style="font-size: 2rem; margin-bottom: 8px;">🖼️</div>
+              <div style="font-weight: 600; color: var(--color-text-title); font-size: 0.95rem;">Drag & drop your project cover image</div>
+              <div style="font-size: 0.8125rem; color: var(--color-text-muted); margin-top: 4px;">PNG, JPG, or WEBP up to 5MB (16:9 ratio recommended)</div>
+              <div style="margin-top: 14px;">
+                <button type="button" class="btn btn-sm btn-outline">Browse Files</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Full Description -->
+        <div class="card" style="margin-bottom: 32px;">
+          <div class="card-header">
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-title);">4. Detailed Description & Architecture</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Full Project Writeup</label>
+              
+              <div class="markdown-editor-box">
+                <div class="markdown-toolbar">
+                  <button type="button" class="toolbar-btn">B</button>
+                  <button type="button" class="toolbar-btn"><i>I</i></button>
+                  <button type="button" class="toolbar-btn">H1</button>
+                  <button type="button" class="toolbar-btn">H2</button>
+                  <button type="button" class="toolbar-btn">&lt;/&gt;</button>
+                  <button type="button" class="toolbar-btn">🔗</button>
+                  <span style="margin-left: auto; font-size: 0.75rem; color: var(--color-text-subtle);">Markdown Supported</span>
+                </div>
+                <textarea class="form-textarea" style="border: none; border-radius: 0; min-height: 180px; padding: 14px;" placeholder="Describe how your project works, what problem it solves, how it was built, challenges faced, and what technologies were used..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submission Actions -->
+        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+          <a href="gallery.html" class="btn btn-outline">Save as Draft</a>
+          <button type="submit" class="btn btn-primary" id="btn-submit-final">Submit Final Project</button>
+        </div>
+
+      </form>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>© 2026 DOGFOOD Multi-Hackathon Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

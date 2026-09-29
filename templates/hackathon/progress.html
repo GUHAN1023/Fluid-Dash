@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Judging Progress Dashboard - DOGFOOD</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+    }
+    .stat-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-text-muted);
+      margin-bottom: 6px;
+    }
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--color-text-title);
+      letter-spacing: -0.02em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="brand-logo" id="nav-brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Overview</a></li>
+          <li><a href="judges.html" class="nav-link">Judges</a></li>
+          <li><a href="rubric.html" class="nav-link">Rubric</a></li>
+          <li><a href="progress.html" class="nav-link active">Progress</a></li>
+          <li><a href="control.html" class="nav-link">Control Center</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="btn btn-outline btn-sm" id="btn-export-csv">📥 Export CSV Report</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Breadcrumbs -->
+  <div class="page-header-strip">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="../index.html">Platform Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="index.html">{{ event.name }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Judging Progress</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main style="padding: 40px 0 80px;">
+    <div class="container">
+
+      <!-- Header & Actions -->
+      <div style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h1 style="font-size: 2rem; font-weight: 700; color: var(--color-text-title); letter-spacing: -0.02em;">Judging Progress & Analytics</h1>
+          <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 4px;">Monitor real-time evaluation status across judges and project submissions.</p>
+        </div>
+
+        <button type="button" class="btn btn-outline" id="btn-export-scores-csv">
+          <span>📥</span> Export Evaluation CSV
+        </button>
+      </div>
+
+      <!-- Stat Cards Grid (Initial 0 / Empty State) -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Total Submissions</div>
+          <div class="stat-num">0</div>
+          <div style="font-size: 0.8125rem; color: var(--color-text-muted); margin-top: 4px;">Submitted projects</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Active Judges</div>
+          <div class="stat-num">0</div>
+          <div style="font-size: 0.8125rem; color: var(--color-text-muted); margin-top: 4px;">Confirmed evaluators</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Completed Reviews</div>
+          <div class="stat-num">0 <span style="font-size: 1rem; color: var(--color-text-muted); font-weight: 500;">/ 0</span></div>
+          <div style="font-size: 0.8125rem; color: var(--color-text-muted); margin-top: 4px;">Scores submitted</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Overall Completion</div>
+          <div class="stat-num" style="color: var(--color-primary);">0%</div>
+          <div class="progress-track" style="margin-top: 10px;">
+            <div class="progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breakdown Table Card with Tabs (By Judge vs By Project) -->
+      <div class="card">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+          
+          <!-- Tab Switcher -->
+          <div class="filter-tabs" role="tablist">
+            <button class="filter-tab active" role="tab">By Judge <span class="filter-count">0</span></button>
+            <button class="filter-tab" role="tab">By Project <span class="filter-count">0</span></button>
+          </div>
+
+          <div style="font-size: 0.8125rem; color: var(--color-text-muted);">
+            Updated: Real-time
+          </div>
+        </div>
+
+        <div class="card-body" style="padding: 0;">
+          <!-- Empty State (No dummy data) -->
+          <div class="empty-state" style="border: none; margin: 0; padding: 48px 24px;">
+            <div class="empty-state-icon">📊</div>
+            <h3 class="empty-state-title">No judging activity recorded yet</h3>
+            <p class="empty-state-desc">Evaluations will appear here once judges begin scoring allocated projects.</p>
+          </div>
+
+          <!-- ==============================================================
+               TEMPLATE / MARKUP STRUCTURE FOR "BY JUDGE" ROW (NO DUMMY DATA)
+               ============================================================== -->
+          <!--
+          <div class="data-table-container" style="border: none; border-radius: 0;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Judge Name</th>
+                  <th>Assigned Projects</th>
+                  <th>Completed Reviews</th>
+                  <th>Remaining</th>
+                  <th>Progress</th>
+                  <th style="text-align: right;">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>[JUDGE_NAME]</strong></td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <div class="progress-track" style="width: 80px;">
+                        <div class="progress-fill" style="width: 0%;"></div>
+                      </div>
+                      <span style="font-size: 0.75rem;">0%</span>
+                    </div>
+                  </td>
+                  <td style="text-align: right;"><span class="badge badge-draft">Not Started</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>© 2026 DOGFOOD Multi-Hackathon Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Public Gallery - DOGFOOD Hackathon</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .gallery-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 32px 0 28px;
+      padding: 16px 20px;
+      background-color: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+    }
+    .filter-controls-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="brand-logo" id="nav-brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Overview</a></li>
+          <li><a href="gallery.html" class="nav-link active">Gallery</a></li>
+          <li><a href="team.html" class="nav-link">Team</a></li>
+          <li><a href="submit.html" class="nav-link">Submit Project</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="submit.html" class="btn btn-primary btn-sm">+ Submit Project</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Breadcrumbs -->
+  <div class="page-header-strip">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="../index.html">Platform Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="index.html">{{ event.name }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Public Gallery</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main style="padding: 40px 0 80px;">
+    <div class="container">
+
+      <!-- Gallery Header -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h1 style="font-size: 2rem; font-weight: 700; color: var(--color-text-title); letter-spacing: -0.02em;">Project Submissions Gallery</h1>
+          <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 4px;">Explore all innovations submitted for {{ event.name }}.</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <a href="submit.html" class="btn btn-primary">+ Submit Your Project</a>
+        </div>
+      </div>
+
+      <!-- Search & Filter Controls Bar -->
+      <div class="gallery-filter-bar">
+        <!-- Search Input -->
+        <div style="flex: 1; min-width: 240px; max-width: 360px;">
+          <input type="text" class="form-input" placeholder="Search projects by name or keywords..." id="gallery-search-input">
+        </div>
+
+        <div class="filter-controls-group">
+          <!-- Track Filter Dropdown -->
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="track-filter" style="font-size: 0.875rem; color: var(--color-text-muted); font-weight: 500;">Track:</label>
+            <select id="track-filter" class="form-select" style="width: 180px;">
+              <option value="all">All Tracks ({{ tracks|length }})</option>
+              {% for track in tracks %}
+              <option value="{{ track.id }}">{{ track.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Sort Order Dropdown -->
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="sort-filter" style="font-size: 0.875rem; color: var(--color-text-muted); font-weight: 500;">Sort:</label>
+            <select id="sort-filter" class="form-select" style="width: 150px;">
+              <option value="newest">Newest First</option>
+              <option value="popular">Most Popular</option>
+              <option value="title">Alphabetical (A-Z)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {% if not projects %}
+      <!-- Default Empty State (No dummy data) -->
+      <div class="empty-state" id="gallery-empty-state">
+        <div class="empty-state-icon">💡</div>
+        <h2 class="empty-state-title">No projects submitted yet</h2>
+        <p class="empty-state-desc">
+          No teams have submitted their final projects for this hackathon yet. Be the first team to publish your build to the gallery!
+        </p>
+        <a href="submit.html" class="btn btn-primary">+ Submit Your Project</a>
+      </div>
+      {% endif %}
+
+      {% if projects %}
+      <div class="card-grid">
+        {% for project in projects %}
+        <article class="card card-clickable">
+          <div style="height: 180px; background-color: #E2E8F0; display: flex; align-items: center; justify-content: center; position: relative;">
+            <span style="font-size: 2.5rem; opacity: 0.3;">🖼️</span>
+            {% if project.winner %}
+            <div style="position: absolute; top: 12px; right: 12px;">
+              <span class="badge badge-winner">🏆 {{ project.winner }}</span>
+            </div>
+            {% endif %}
+          </div>
+          <div class="card-body">
+            <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+              <span class="badge badge-track">{{ project.track_name }}</span>
+            </div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--color-text-title); margin-bottom: 4px;">
+              <a href="project-detail.html?id={{ project.id }}">{{ project.title }}</a>
+            </h3>
+            <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 12px;">By Team {{ project.team_name }}</p>
+            <p style="font-size: 0.875rem; color: var(--color-text-body); line-height: 1.5;">{{ project.summary }}</p>
+          </div>
+          <div class="card-footer">
+            <span style="font-size: 0.8125rem; color: var(--color-text-muted);">{{ project.member_count }} Contributors</span>
+            <a href="project-detail.html?id={{ project.id }}" class="btn btn-sm btn-outline">View Project →</a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Pagination / Load More UI (Structure ready) -->
+      <div style="margin-top: 48px; text-align: center;">
+        <button type="button" class="btn btn-outline" disabled style="opacity: 0.5; cursor: not-allowed;">Load More Projects</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>© 2026 DOGFOOD Multi-Hackathon Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

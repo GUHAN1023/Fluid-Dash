@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Hackathons - Organizer Dashboard - DOGFOOD</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    .dashboard-header {
+      padding: 40px 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .action-icons-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar (Organizer State) -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="brand-logo" id="nav-brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Hackathons</a></li>
+          <li><a href="dashboard.html" class="nav-link active">My Hackathons</a></li>
+          <li><a href="create.html" class="nav-link">Create Hackathon</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 0.875rem; font-weight: 600; color: var(--color-text-title);">Organizer</span>
+          <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 0.875rem; font-weight: 700;">OG</div>
+        </div>
+        <a href="create.html" class="btn btn-primary btn-sm">+ Create Hackathon</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <div class="container">
+    <div class="dashboard-header">
+      <div>
+        <h1 style="font-size: 1.875rem; font-weight: 700; color: var(--color-text-title); letter-spacing: -0.02em;">My Hackathons</h1>
+        <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 4px;">Manage your organized events, submissions, judging, and awards.</p>
+      </div>
+      <a href="create.html" class="btn btn-primary">+ Create New Hackathon</a>
+    </div>
+
+    <!-- Status Filter Tabs -->
+    <div style="margin-bottom: 24px;">
+      <div class="filter-tabs" role="tablist">
+        <button class="filter-tab active" role="tab">All <span class="filter-count">0</span></button>
+        <button class="filter-tab" role="tab">Draft <span class="filter-count">0</span></button>
+        <button class="filter-tab" role="tab">Upcoming <span class="filter-count">0</span></button>
+        <button class="filter-tab" role="tab">Live <span class="filter-count">0</span></button>
+        <button class="filter-tab" role="tab">Closed <span class="filter-count">0</span></button>
+      </div>
+    </div>
+
+    <!-- Default Empty State (No dummy data) -->
+    <div class="empty-state" id="dashboard-empty-state">
+      <div class="empty-state-icon">📋</div>
+      <h2 class="empty-state-title">No hackathons created yet</h2>
+      <p class="empty-state-desc">
+        You haven't launched or drafted any hackathons under this account. Click below to start organizing your first competition.
+      </p>
+      <a href="create.html" class="btn btn-primary">+ Create Your First Hackathon</a>
+    </div>
+
+    <!-- ==============================================================
+         TEMPLATE / MARKUP STRUCTURE FOR ORGANIZER HACKATHONS TABLE (NO DUMMY DATA)
+         Real backend or API data will populate rows into this table.
+         ============================================================== -->
+    <!--
+    <div class="data-table-container" style="display: none;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Hackathon Name</th>
+            <th>Status</th>
+            <th>Dates</th>
+            <th>Teams / Projects</th>
+            <th>Judging Progress</th>
+            <th style="text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="font-weight: 600; color: var(--color-text-title);">{{ event.name }}</div>
+              <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ event.id }}</div>
+            </td>
+            <td>
+              <span class="badge badge-live"><span class="badge-dot"></span> CLOSED</span>
+            </td>
+            <td>Feb 26, 2026 – Mar 01, 2026</td>
+            <td>40 Teams / 41 Projects</td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="progress-track" style="width: 100px;">
+                  <div class="progress-fill" style="width: 0%;"></div>
+                </div>
+                <span style="font-size: 0.75rem;">0%</span>
+              </div>
+            </td>
+            <td style="text-align: right;">
+              <div class="action-icons-group" style="justify-content: flex-end;">
+                <a href="hackathon/index.html" class="btn btn-sm btn-outline" title="View Public Page">View</a>
+                <a href="hackathon/control.html" class="btn btn-sm btn-outline" title="Control Center">Control</a>
+                <a href="create.html" class="btn btn-sm btn-outline" title="Edit Hackathon">Edit</a>
+                <a href="#delete-modal" class="btn btn-sm btn-danger" title="Delete">Delete</a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    -->
+
+    <!-- Delete Confirmation Modal Component (Reusable template preview) -->
+    <div class="card" style="margin-top: 48px; border-style: dashed; background-color: #FAFAFA;">
+      <div class="card-header" style="background: transparent;">
+        <span style="font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; color: var(--color-text-muted);">Component Preview: Delete Confirmation Dialog</span>
+      </div>
+      <div class="card-body">
+        <div class="modal-dialog" style="max-width: 440px; margin: 0 auto; box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);">
+          <div class="modal-header">
+            <h3 class="modal-title" style="color: var(--badge-danger-text);">Confirm Deletion</h3>
+            <button class="modal-close-btn">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size: 0.9375rem; color: var(--color-text-body); margin-bottom: 12px;">
+              Are you sure you want to delete this hackathon? This action cannot be undone and will delete all submissions, rubrics, and judge assignments.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline btn-sm">Cancel</button>
+            <button type="button" class="btn btn-danger btn-sm">Yes, Delete Hackathon</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-top">
+        <div class="brand-logo">
+          <span class="brand-icon">🐕</span>
+          <span>DOGFOOD</span>
+        </div>
+        <ul class="footer-links">
+          <li><a href="index.html">About Platform</a></li>
+          <li><a href="index.html">Rules</a></li>
+          <li><a href="index.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 DOGFOOD Multi-Hackathon Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

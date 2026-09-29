@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Judging Control Center - DOGFOOD Organizer</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .tab-section-header {
+      margin-bottom: 24px;
+    }
+    .assignment-choice-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      background: #FFFFFF;
+      transition: border-color 0.15s ease;
+    }
+    .assignment-choice-card:hover {
+      border-color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="brand-logo" id="nav-brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Overview</a></li>
+          <li><a href="judges.html" class="nav-link">Judges</a></li>
+          <li><a href="rubric.html" class="nav-link">Rubric</a></li>
+          <li><a href="progress.html" class="nav-link">Progress</a></li>
+          <li><a href="control.html" class="nav-link active">Control Center</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="gallery.html" class="btn btn-outline btn-sm">Public Gallery</a>
+        <a href="#publish-winners-modal" class="btn btn-primary btn-sm">Publish Winners</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Breadcrumbs -->
+  <div class="page-header-strip">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="../index.html">Platform Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="index.html">{{ event.name }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Judging Control Center</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main style="padding: 40px 0 80px;">
+    <div class="container">
+
+      <!-- Header -->
+      <div style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h1 style="font-size: 2rem; font-weight: 700; color: var(--color-text-title); letter-spacing: -0.02em;">Judging Control Center</h1>
+          <p style="color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 4px;">Master command center for assigning judges, consolidating scores, and publishing winners.</p>
+        </div>
+
+        <a href="#publish-modal" class="btn btn-primary" id="btn-open-publish-modal">
+          🏆 Publish Winners to Gallery
+        </a>
+      </div>
+
+      <!-- Navigation Tabs for the 3 Control Center Sections -->
+      <div style="margin-bottom: 32px;">
+        <div class="filter-tabs" role="tablist">
+          <a href="#tab-assign" class="filter-tab active" role="tab">1. Assign Judges</a>
+          <a href="#tab-consolidated" class="filter-tab" role="tab">2. Consolidated Scores</a>
+          <a href="#tab-winners" class="filter-tab" role="tab">3. Winners & Awards</a>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           TAB 1: ASSIGN JUDGES (Random vs Manual Assignment Cards + Summary)
+           ============================================================== -->
+      <section id="tab-assign" style="margin-bottom: 48px;">
+        <div class="tab-section-header">
+          <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-title);">1. Assign Judges to Projects</h2>
+          <p style="font-size: 0.875rem; color: var(--color-text-muted);">Distribute project submissions fairly across your judging panel.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 28px;">
+          <!-- Option A: Automated / Random Balanced Assignment -->
+          <div class="assignment-choice-card">
+            <div style="font-size: 1.75rem; margin-bottom: 8px;">⚡</div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--color-text-title);">Random Balanced Assignment</h3>
+            <p style="font-size: 0.875rem; color: var(--color-text-muted); margin: 6px 0 16px; line-height: 1.5;">
+              Evenly distribute submissions among active judges. Ensures at least N evaluations per project.
+            </p>
+            <div class="form-group">
+              <label class="form-label" style="font-size: 0.8125rem;">Evaluations per project target:</label>
+              <input type="number" class="form-input" value="3" min="1" max="10" style="max-width: 120px;">
+            </div>
+            <button type="button" class="btn btn-outline" style="width: 100%;">Run Auto-Distribution</button>
+          </div>
+
+          <!-- Option B: Manual Track-Based Assignment -->
+          <div class="assignment-choice-card">
+            <div style="font-size: 1.75rem; margin-bottom: 8px;">🎯</div>
+            <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--color-text-title);">Manual Assignment</h3>
+            <p style="font-size: 0.875rem; color: var(--color-text-muted); margin: 6px 0 16px; line-height: 1.5;">
+              Hand-pick projects for specific industry specialist judges or track sponsors.
+            </p>
+            <div style="height: 56px;"></div> <!-- Spacing alignment -->
+            <a href="judges.html" class="btn btn-outline" style="width: 100%;">Open Manual Matrix →</a>
+          </div>
+        </div>
+
+        <!-- Assignment Summary Table (Empty State) -->
+        <div class="card">
+          <div class="card-header">
+            <h3 style="font-size: 1rem; font-weight: 600; color: var(--color-text-title);">Assignment Coverage Summary</h3>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="empty-state" style="border: none; margin: 0; padding: 40px 20px;">
+              <div class="empty-state-title" style="font-size: 0.95rem;">No assignments configured yet</div>
+              <p class="empty-state-desc">Choose an assignment strategy above to link judges with submitted projects.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           TAB 2: CONSOLIDATED SCORES TABLE
+           Per-project average score, judge count, expandable breakdown
+           ============================================================== -->
+      <section id="tab-consolidated" style="margin-bottom: 48px;">
+        <div class="tab-section-header">
+          <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-title);">2. Consolidated Scores (Organizer Only)</h2>
+          <p style="font-size: 0.875rem; color: var(--color-text-muted);">Normalized average scores across all criteria and judges.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <!-- Empty State (No dummy data) -->
+            <div class="empty-state" style="border: none; margin: 0; padding: 48px 24px;">
+              <div class="empty-state-icon">📈</div>
+              <h3 class="empty-state-title">No scores consolidated yet</h3>
+              <p class="empty-state-desc">Submitted scores from judges will automatically populate here in descending order.</p>
+            </div>
+
+            <!-- ==============================================================
+                 TEMPLATE / MARKUP STRUCTURE FOR CONSOLIDATED SCORE ROW (NO DUMMY DATA)
+                 ============================================================== -->
+            <!--
+            <div class="data-table-container" style="border: none; border-radius: 0;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Project</th>
+                    <th>Track</th>
+                    <th>Judges Evaluated</th>
+                    <th>Average Score</th>
+                    <th>Breakdown</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>[PROJECT_TITLE]</strong></td>
+                    <td><span class="badge badge-track">[TRACK_NAME]</span></td>
+                    <td>0 / 3 Judges</td>
+                    <td><strong style="color: var(--color-primary); font-size: 1.05rem;">0.00 / 10</strong></td>
+                    <td>
+                      <button class="btn btn-sm btn-ghost">Expand Judge Scores ▾</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           TAB 3: WINNERS & AWARDS SECTION
+           Rank selector per project, sorted by score, "Publish Winners to Gallery" button
+           ============================================================== -->
+      <section id="tab-winners" style="margin-bottom: 48px;">
+        <div class="tab-section-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-title);">3. Final Winners & Award Selection</h2>
+            <p style="font-size: 0.875rem; color: var(--color-text-muted);">Assign award tiers to top-scoring projects and reveal them to the public.</p>
+          </div>
+          <a href="#publish-modal" class="btn btn-primary" id="btn-publish-winners">Publish Winners to Gallery</a>
+        </div>
+
+        <!-- Empty State for Winners Selection (No dummy data) -->
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <div class="empty-state" style="border: none; margin: 0; padding: 48px 24px;">
+              <div class="empty-state-icon">🏆</div>
+              <h3 class="empty-state-title">No evaluated projects ready for winner designation</h3>
+              <p class="empty-state-desc">Once scoring is completed, rank selectors will activate for award designations.</p>
+            </div>
+
+            <!-- ==============================================================
+                 TEMPLATE / MARKUP STRUCTURE FOR WINNER SELECTION ROW (NO DUMMY DATA)
+                 ============================================================== -->
+            <!--
+            <div class="data-table-container" style="border: none; border-radius: 0;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Rank / Award Designation</th>
+                    <th>Project</th>
+                    <th>Final Score</th>
+                    <th>Prize Reward</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <select class="form-select" style="max-width: 220px;">
+                        <option>None (Participant)</option>
+                        <option>🏆 1st Place Grand Winner</option>
+                        <option>🥈 2nd Place Runner Up</option>
+                        <option>🥉 3rd Place</option>
+                        <option>⭐ Best Track Winner</option>
+                      </select>
+                    </td>
+                    <td><strong>[PROJECT_TITLE]</strong></td>
+                    <td>0.00 / 10</td>
+                    <td>[PRIZE_VALUE]</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Publish Confirmation Modal Preview Component -->
+      <div class="card" style="margin-top: 48px; border-style: dashed; background-color: #FAFAFA;">
+        <div class="card-header" style="background: transparent;">
+          <span style="font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; color: var(--color-text-muted);">Component Preview: Publish Winners Confirmation Modal</span>
+        </div>
+        <div class="card-body">
+          <div class="modal-dialog" style="max-width: 480px; margin: 0 auto; box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);">
+            <div class="modal-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>🏆</span>
+                <h3 class="modal-title">Publish Winners to Public Gallery</h3>
+              </div>
+              <button class="modal-close-btn">✕</button>
+            </div>
+            <div class="modal-body">
+              <p style="font-size: 0.9375rem; color: var(--color-text-body); margin-bottom: 12px; line-height: 1.5;">
+                Are you ready to publish hackathon winners? This will immediately display winner badges (e.g. <span class="badge badge-winner">🏆 1st Place</span>) on project cards in the Public Gallery and Project Detail pages.
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline btn-sm">Cancel</button>
+              <button type="button" class="btn btn-primary btn-sm">Confirm & Publish Winners</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>© 2026 DOGFOOD Multi-Hackathon Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

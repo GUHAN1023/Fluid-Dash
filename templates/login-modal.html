@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login / Sign Up - DOGFOOD Platform</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    .auth-tab-bar {
+      display: flex;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: 24px;
+    }
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 16px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .auth-tab.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+    .divider-text {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: var(--color-text-subtle);
+      font-size: 0.8125rem;
+      margin: 20px 0;
+    }
+    .divider-text::before, .divider-text::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .divider-text:not(:empty)::before {
+      margin-right: .5em;
+    }
+    .divider-text:not(:empty)::after {
+      margin-left: .5em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Base Page (Platform Home underneath) -->
+  <header class="navbar" style="filter: blur(1px); opacity: 0.7;">
+    <div class="container navbar-inner">
+      <div class="brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Modal Component (Reusable overlay + centered box matching Figma modal-card) -->
+  <div class="modal-overlay" id="auth-modal-overlay">
+    <div class="modal-dialog" id="auth-modal-card">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="brand-icon" style="width: 24px; height: 24px; font-size: 0.75rem;">🐕</span>
+          <span class="modal-title">Welcome to DOGFOOD</span>
+        </div>
+        <a href="index.html" class="modal-close-btn" title="Close modal" id="modal-close-x">✕</a>
+      </div>
+
+      <!-- Tab Switcher (Login vs Sign Up) -->
+      <div class="auth-tab-bar">
+        <a href="#login" class="auth-tab active" id="tab-auth-login">Log In</a>
+        <a href="#signup" class="auth-tab" id="tab-auth-signup">Sign Up</a>
+      </div>
+
+      <!-- Modal Body - Login Form View -->
+      <div class="modal-body" style="padding-top: 0;">
+        <form action="dashboard.html" method="GET" id="login-form">
+          <div class="form-group">
+            <label class="form-label" for="login-email">Email address</label>
+            <input type="email" id="login-email" class="form-input" placeholder="you@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" for="login-password" style="margin-bottom: 0;">Password</label>
+              <a href="#" style="font-size: 0.8125rem; color: var(--color-primary);">Forgot password?</a>
+            </div>
+            <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+          </div>
+
+          <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="remember-me" style="accent-color: var(--color-primary); width: 16px; height: 16px;">
+            <label for="remember-me" style="font-size: 0.875rem; color: var(--color-text-body); cursor: pointer;">Remember me on this device</label>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;" id="btn-submit-login">Log In</button>
+        </form>
+
+        <div class="divider-text">OR</div>
+
+        <!-- Markup / Form for Sign Up view (cleanly structured) -->
+        <div style="border-top: 1px dashed var(--color-border); padding-top: 16px; text-align: center;">
+          <p style="font-size: 0.875rem; color: var(--color-text-muted);">
+            Don't have an account yet?
+          </p>
+          <div style="margin-top: 10px;">
+            <a href="index.html" class="btn btn-outline btn-sm">Switch to Sign Up Form</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer" style="justify-content: center; font-size: 0.8125rem; color: var(--color-text-subtle);">
+        By signing in you agree to DOGFOOD Terms of Service and Privacy Policy.
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Judge Scoring Workspace - DOGFOOD</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .scoring-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    .queue-sidebar {
+      background-color: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+    .rubric-criteria-card {
+      background-color: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .slider-container {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .score-slider {
+      flex: 1;
+      height: 8px;
+      border-radius: var(--radius-full);
+      accent-color: var(--color-primary);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar (Judge Mode) -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="../index.html" class="brand-logo" id="nav-brand-logo">
+        <span class="brand-icon">🐕</span>
+        <span>DOGFOOD</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Overview</a></li>
+          <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+          <li><a href="score.html" class="nav-link active">Judge Scoring</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <span class="badge badge-active"><span class="badge-dot"></span> Judge Session</span>
+        <a href="gallery.html" class="btn btn-outline btn-sm">Exit Scoring</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Breadcrumbs -->
+  <div class="page-header-strip">
+    <div class="container">
+      <div class="breadcrumbs">
+        <a href="../index.html">Platform Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="index.html">{{ event.name }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Scoring Workspace</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main style="padding: 40px 0 80px;">
+    <div class="container">
+
+      <!-- Progress Bar Strip -->
+      <div class="card" style="margin-bottom: 28px; padding: 20px 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-weight: 600; font-size: 0.875rem; color: var(--color-text-title);">Your Assigned Projects Evaluation Progress</span>
+          <span style="font-weight: 700; font-size: 0.875rem; color: var(--color-primary);">{{ completion_percent|default(0) }}% Completed ({{ evaluated_count|default(0) }} / {{ total_count|default(0) }} Evaluated)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: {{ completion_percent|default(0) }}%;"></div>
+        </div>
+      </div>
+
+      <div class="scoring-layout">
+
+        <!-- Left Column: Project Queue Sidebar -->
+        <aside class="queue-sidebar">
+          <div class="card-header" style="background-color: var(--color-canvas);">
+            <h2 style="font-size: 1rem; font-weight: 700; color: var(--color-text-title);">Assigned Queue ({{ assigned_projects|length }})</h2>
+            <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 2px;">Projects allocated to you for evaluation</p>
+          </div>
+
+          <div style="padding: 16px;">
+            {% if not assigned_projects %}
+            <!-- Empty State for Sidebar Queue -->
+            <div class="empty-state" style="padding: 24px 12px; margin: 0; border-style: dashed;">
+              <div class="empty-state-icon" style="width: 36px; height: 36px; font-size: 1rem; margin-bottom: 8px;">📑</div>
+              <div class="empty-state-title" style="font-size: 0.875rem;">No projects in queue</div>
+              <p class="empty-state-desc" style="font-size: 0.75rem; margin-bottom: 0;">Organizers have not assigned submissions to your profile yet.</p>
+            </div>
+            {% endif %}
+
+            {% if assigned_projects %}
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
+              {% for p in assigned_projects %}
+              <div style="padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: #FFFFFF; cursor: pointer;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-weight: 600; font-size: 0.875rem;">{{ p.title }}</span>
+                  <span class="badge {% if p.scored %}badge-active{% else %}badge-draft{% endif %}" style="font-size: 0.65rem;">{% if p.scored %}Scored{% else %}Pending{% endif %}</span>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 4px;">Track: {{ p.track_name }}</div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </aside>
+
+        <!-- Right Column: Main Rubric Evaluation Panel -->
+        <section>
+          <!-- Current Project Header -->
+          <div class="card" style="margin-bottom: 24px;">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <span class="badge badge-track" style="margin-bottom: 6px;">{{ current_project.track_name if current_project else 'Track' }}</span>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text-title);">{{ current_project.title if current_project else 'Assigned Evaluation' }}</h1>
+                <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 2px;">Team: {{ current_project.team_name if current_project else 'Assigned Team' }}</p>
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <a href="project-detail.html" target="_blank" class="btn btn-sm btn-outline">View Full Project Writeup ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scoring Form -->
+          <form id="judge-scoring-form">
+
+            <!-- Rubric Criterion 1 Template/Placeholder -->
+            <div class="rubric-criteria-card">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                <div>
+                  <h3 style="font-size: 1rem; font-weight: 700; color: var(--color-text-title);">Criterion 1: Technical Implementation</h3>
+                  <p style="font-size: 0.8125rem; color: var(--color-text-muted);">How well engineered and robust is the technical architecture?</p>
+                </div>
+                <span class="badge badge-active">Weight: 40%</span>
+              </div>
+
+              <div class="slider-container">
+                <input type="range" min="1" max="10" value="5" class="score-slider">
+                <span style="font-size: 1.125rem; font-weight: 700; color: var(--color-primary); min-width: 32px; text-align: right;">5 / 10</span>
+              </div>
+            </div>
+
+            <!-- Rubric Criterion 2 Template/Placeholder -->
+            <div class="rubric-criteria-card">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                <div>
+                  <h3 style="font-size: 1rem; font-weight: 700; color: var(--color-text-title);">Criterion 2: Innovation & Creativity</h3>
+                  <p style="font-size: 0.8125rem; color: var(--color-text-muted);">Is this a novel approach or standard implementation?</p>
+                </div>
+                <span class="badge badge-active">Weight: 30%</span>
+              </div>
+
+              <div class="slider-container">
+                <input type="range" min="1" max="10" value="5" class="score-slider">
+                <span style="font-size: 1.125rem; font-weight: 700; color: var(--color-primary); min-width: 32px; text-align: right;">5 / 10</span>
+              </div>
+            </div>
+
+            <!-- Comments & Qualitative Feedback -->
+            <div class="card" style="margin-bottom: 28px;">
+              <div class="card-header">
+                <h3 style="font-size: 1rem; font-weight: 600; color: var(--color-text-title);">Judge Feedback & Private Comments</h3>
+              </div>
+              <div class="card-body">
+                <textarea class="form-textarea" placeholder="Share constructive feedback on architecture, UX, and suggestions for the team..."></textarea>
+              </div>
+            </div>
+
+            <!-- Scoring Action Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button type="button" class="btn btn-outline">Previous Project</button>
+              <div style="display: flex; gap: 12px;">
+                <button type="button" class="btn btn-secondary">Save Draft Score</button>
+                <button type="button" class="btn btn-primary" id="btn-save-next-score">Submit & Next Project →</button>
+              </div>
+            </div>
+
+          </form>
+        </section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-bottom">
+        <p>© 2026 DOGFOOD Multi-Hackathon Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
