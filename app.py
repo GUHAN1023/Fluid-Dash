@@ -351,8 +351,10 @@ def inject_global_template_vars():
 
 # Static and CSS routing
 @app.route("/css/<path:filename>")
-def serve_css(filename):
+@app.route("/<path:prefix>/css/<path:filename>")
+def serve_css(filename, prefix=None):
     return send_from_directory(os.path.join(BASE_DIR, "static", "css"), filename)
+
 
 
 @app.route("/static/<path:filename>")
